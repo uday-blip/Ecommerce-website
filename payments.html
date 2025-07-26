@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <link rel="shortcut icon" href="./logo.png.png" type="image/x-icon">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            /* background-color: #D4F6FF; */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 95vh;
+        }
+
+        h3 {
+            color: #00bcd4;
+            font-size: x-large;
+        }
+
+        ul {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        ul>div {
+            font-size: large;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 250px;
+            box-shadow: 4px 3px 2px gray;
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        ul div img {
+            height: 30px;
+        }
+
+        ul div:hover {
+            scale: 1.03;
+        }
+
+
+
+        #payNow {
+            color: white;
+            background-color: #257180;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 2%;
+        }
+
+        #payNow:hover {
+            color: #257180;
+            background-color: white;
+        }
+
+        /*  */
+        
+
+        #section {
+            position: fixed;
+           
+        }
+
+        .close-btn,#home {
+            font-size: 18px;
+            font-weight: 400;
+            color: #fff;
+            padding: 14px 22px;
+            border: none;
+            background: #4070f4;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover,#home:hover {
+            background-color: #265df2;
+        }
+
+        button.show-modal,
+        .modal-box {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #section.active .show-modal {
+            display: none;
+        }
+
+        .overlay {
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #section.active .overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 380px;
+            width: 100%;
+            padding: 30px 20px;
+            border-radius: 24px;
+            background-color: #fff;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        #section.active .modal-box {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .modal-box i {
+            font-size: 70px;
+            color: #4070f4;
+        }
+
+        .modal-box h2 {
+            margin-top: 20px;
+            font-size: 25px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .modal-box h3 {
+            font-size: 16px;
+            font-weight: 400;
+            color: #333;
+            text-align: center;
+        }
+
+        .modal-box .buttons {
+            margin-top: 25px;
+            
+        }
+
+       
+    </style>
+</head>
+
+<body>
+    <h3>Online Payment Options</h3>
+    <ul>
+        <div><input type="radio" name="Payment"><img src="./credit-card (1).png" alt="UPI"> UPI (Pay via any App)
+        </div>
+        <div><input type="radio" name="Payment"><img src="./upi.png" alt="creditCard">Credit/Debit Card</div>
+        <div><input type="radio" name="Payment"><img src="./paylater.png" alt="PayLater"> Pay Later</div>
+        <div><input type="radio" name="Payment"><img src="./wallet.png" alt="wallets"> Wallets</div>
+        <div><input type="radio" name="Payment"><img src="./emi.png" alt="EMI"> EMI</div>
+        <div><input type="radio" name="Payment"><img src="./online-banking.png" alt="netBanking"> Net Banking
+        </div>
+    </ul>
+
+    <h3>Pay on Delivery (Cash/UPI)</h3>
+    <ul>
+        <div><input type="radio" name="Payment"><img src="./cash-on-delivery.png" alt="COD">Cash on Delivery
+        </div>
+    </ul>
+
+    <button id="payNow">Pay Now</button>
+
+    <!-- PopUp Box -->
+    <div id="section">
+        <span class="overlay"></span>
+        <div class="modal-box">
+            <i class="fa-sharp fa-solid fa-circle-check"></i>
+            <h2>Order Placed</h2>
+            <h3>Your Order Placed Successfully.</h3>
+            <div class="buttons">
+                <button class="close-btn">Ok, Close</button>
+                <button id="home">Home</button>
+            </div>
+        </div>
+    </div>  
+
+
+
+    <script>
+        let payBtn = document.getElementById("payNow")
+        let select = document.getElementsByName("Payment")
+        payBtn.style.display = "none"
+        select.forEach(x => {
+            x.addEventListener("click", () => {
+                payBtn.style.display = "block"
+            })
+        })
+
+
+    // Order Confirmation
+    const section = document.querySelector("#section"),
+       overlay = document.querySelector(".overlay"),
+      closeBtn = document.querySelector(".close-btn"),
+      loginRedirect=document.querySelector("#home");
+
+     payBtn.addEventListener("click",()=>{
+        document.body.style.opacity = "0.2"
+        setTimeout(()=>{
+          document.body.style.opacity = "1"
+          section.classList.add("active")
+        },2000)
+    }) 
+        
+
+    overlay.addEventListener("click", () =>{
+      document.body.style.opacity = "0.2"
+          section.classList.remove("active")
+    }
+    );
+
+    closeBtn.addEventListener("click", () =>{
+      section.classList.remove("active")
+      window.location.href="cart.html"
+    }
+    );
+
+    loginRedirect.addEventListener("click",()=>{
+      window.location.href="index.html"     
+    })
+
+
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>

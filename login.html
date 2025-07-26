@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login & Signup</title>
+  <link rel="shortcut icon" href="./logo.png.png" type="image/x-icon">
+  <style>
+    /* login page */
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* background: #f0faff; */
+    }
+
+    span {
+      font-size: 0.6rem;
+      color: red;
+    }
+
+    .wrapper {
+      position: relative;
+      max-width: 350px;
+      width: 100%;
+      border-radius: 12px;
+      padding: 20px 30px 100px;
+      background: #257180;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .form.login {
+      position: absolute;
+      left: 50%;
+      bottom: -86%;
+      transform: translateX(-50%);
+      width: calc(100% + 220px);
+      padding: 20px 140px;
+      border-radius: 50%;
+      height: 100%;
+      background: #fff;
+      transition: all 0.6s ease;
+    }
+
+    .wrapper.active .form.login {
+      bottom: -15%;
+      border-radius: 35%;
+      box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form header {
+      font-size: 2rem;
+      text-align: center;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .form.login header {
+      color: #333;
+      opacity: 0.6;
+    }
+
+    .wrapper.active .form.login header {
+      opacity: 1;
+    }
+
+    .wrapper.active .signup header {
+      opacity: 0.6;
+    }
+
+    .wrapper form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 30px;
+    }
+
+    form input {
+      height: 40px;
+      outline: none;
+      border: none;
+      padding: 0 15px;
+      font-size: 16px;
+      font-weight: 400;
+      color: #333;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .form.login input {
+      border: 1px solid #aaa;
+    }
+
+    .form.login input:focus {
+      box-shadow: 0 1px 0 #ddd;
+    }
+
+    form .checkbox {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .checkbox input[type="checkbox"] {
+      height: 16px;
+      width: 16px;
+      accent-color: #fff;
+      cursor: pointer;
+    }
+
+    form .checkbox label {
+      cursor: pointer;
+      color: #fff;
+    }
+
+    form a {
+      color: #333;
+      text-decoration: none;
+    }
+
+    form a:hover {
+      text-decoration: underline;
+    }
+
+    form input[type="submit"] {
+      margin-top: 15px;
+      padding: none;
+      font-size: 18px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .form.login input[type="submit"] {
+      background: #257180;
+      color: #fff;
+      border: none;
+    }
+
+    /* popUp Model */
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    #section {
+      position: fixed;
+      /* height: 100%;
+      width: 100%;
+      background: #e3f2fd; */
+    }
+
+    button {
+      font-size: 18px;
+      font-weight: 400;
+      color: #fff;
+      padding: 14px 22px;
+      border: none;
+      background: #4070f4;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #265df2;
+    }
+
+    button.show-modal,
+    .modal-box {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #section.active .show-modal {
+      display: none;
+    }
+
+    .overlay {
+      position: fixed;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #section.active .overlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 380px;
+      width: 100%;
+      padding: 30px 20px;
+      border-radius: 24px;
+      background-color: #fff;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      transform: translate(-50%, -50%) scale(1.2);
+    }
+
+    #section.active .modal-box {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .modal-box i {
+      font-size: 70px;
+      color: #4070f4;
+    }
+
+    .modal-box h2 {
+      margin-top: 20px;
+      font-size: 25px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .modal-box h3 {
+      font-size: 16px;
+      font-weight: 400;
+      color: #333;
+      text-align: center;
+    }
+
+    .modal-box .buttons {
+      margin-top: 25px;
+    }
+
+    .modal-box button {
+      font-size: 14px;
+      padding: 6px 12px;
+      margin: 0 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <section class="wrapper">
+    <div class="form login">
+      <header>Login</header>
+      <form action="#" id="LoginForm">
+        <input type="text" placeholder="Email address" required id="loginemail" />
+        <input type="password" placeholder="Password" required id="loginpassword" />
+        <a href="#" id="guest">Login as Guest</a>
+        <input type="submit" value="Login" />
+      </form>
+    </div>
+
+    <div class="form signup">
+      <header>Signup</header>
+      <form action="" id="signup">
+        <input type="text" placeholder="Full name" required id="username" />
+        <span id="nameError"></span>
+        <input type="text" placeholder="Email address" required id="useremail" />
+        <span id="emailError"></span>
+        <input type="password" placeholder="Password" required id="userpassword" />
+        <span id="passwordError"></span>
+        <div class="checkbox">
+          <input type="checkbox" id="signupCheck" />
+          <label for="signupCheck">I accept all terms & conditions</label>
+        </div>
+        <input type="submit" value="Signup" />
+      </form>
+    </div>
+
+    <div id="section">
+      <span class="overlay"></span>
+      <div class="modal-box">
+        <i class="fa-sharp fa-solid fa-circle-exclamation"></i>
+        <h2 id="h2">Warning</h2>
+        <h3 id="h3">Please Try to Login to View Products.</h3>
+        <div class="buttons">
+          <button class="close-btn">Ok, Close</button>
+          <button id="loginRedirect">Login</button>
+        </div>
+      </div>
+    </div>
+
+
+    <script>
+      const wrapper = document.querySelector(".wrapper"),
+        signupForm = document.querySelector(".signup"),
+        loginForm = document.querySelector(".login");
+
+      loginForm.addEventListener("click", () => {
+        wrapper.classList.add("active");
+      });
+      signupForm.addEventListener("click", () => {
+        wrapper.classList.remove("active");
+      });
+
+      //  signup validation
+      document.querySelector("#signup").addEventListener("submit", (event) => {
+        event.preventDefault();
+       
+        userName = document.getElementById("username").value.trim()
+        userPassword = document.getElementById("userpassword").value.trim()
+        userEmail = document.getElementById("useremail").value.trim()
+
+        let nameError = document.querySelector("#nameError")
+        let emailError = document.querySelector("#emailError")
+        let passwordError = document.querySelector("#passwordError")
+
+
+        let nameReg = /^[A-Za-z]{3,}$/
+        let emailReg = /^[A-Za-z0-9!#$%^&*]+@[A-Za-z]+\.[A-Za-z]{2,}$/
+        let passwordReg = /^(?=(.*[A-Z]{1,}))(?=(.*[a-z]{1,}))(?=(.*[0-9]{1,}))(?=(.*[!@#$%^&*-_]{1,}))[A-Za-z0-9!@#$%^&*-_]{8,15}$/
+
+
+        isSignup = true;
+
+
+        if (!nameReg.test(userName)) {
+          nameError.textContent = "The name should contains minimum 3 alphabets.";
+          isSignup = false;
+        }
+
+        if (!emailReg.test(userEmail)) {
+          emailError.textContent = "The email address you entered seems to be invalid. Please double-check and enter a valid email address."
+          isSignup = false;
+        }
+
+        if (!passwordReg.test(userPassword)) {
+          passwordError.textContent = "The password must contains atleast 8 characters with 1 letter, 1 number and 1 special character."
+          isSignup = false;
+        }
+
+
+        if (isSignup == true) {
+          localStorage.setItem("Email", userEmail)
+          localStorage.setItem("Password", userPassword)
+          localStorage.setItem("Name", userName)
+          document.getElementById("username").value = ""
+          document.getElementById("userpassword").value = ""
+          document.getElementById("useremail").value = ""
+          wrapper.style.display = "none"
+          setTimeout(() => {
+            alertPopUp("Success","Your Signup Completed Successfully.")
+            wrapper.style.display = "block"
+          }, 2000)
+          wrapper.classList.add("active");
+        }
+
+      })
+
+      //login validation
+      document.getElementById("LoginForm").addEventListener("submit",(e)=>{
+        e.preventDefault()
+        let loginEmail = document.getElementById("loginemail").value.trim()
+        let loginPassword = document.getElementById("loginpassword").value.trim()
+
+        let Email = localStorage.getItem("Email")
+        let Password = localStorage.getItem("Password")
+
+
+        if (loginEmail == Email && loginPassword == Password) {
+          localStorage.setItem("isLoggedIn", "true");
+          document.getElementById("loginemail").value = ""
+          document.getElementById("loginpassword").value = ""
+          document.querySelector(".wrapper").style.display = "none"
+          setTimeout(()=>{
+            document.querySelector(".wrapper").style.display = "block"
+            alertPopUp("Sucess","Login Successful.")
+            setTimeout(()=>{
+              window.location.href = "index.html"
+            },1000)
+          },2000)
+         
+        } else {
+          alertPopUp("Warning",`You are not Loggedin due to Incorrect Credentials. Please try to signUp`)
+        }
+      })
+
+      //Guest Login
+        let Guest=document.querySelector("#guest")  
+        Guest.addEventListener("click",(e)=>{
+          e.preventDefault()
+          localStorage.setItem("Name","Guest")
+          alertPopUp("Success","You are Logged as Guest")
+          setTimeout(()=>{
+            window.location.href="index.html"
+          },1000)
+          localStorage.setItem("isLoggedIn", "true");          
+        })
+
+
+      // popup alert
+       function alertPopUp(h2Data,h3Data) {
+        const section = document.querySelector("#section"),
+          overlay = document.querySelector(".overlay"),
+          closeBtn = document.querySelector(".close-btn"),
+          loginRedirect = document.querySelector("#loginRedirect"),
+          h2 = document.getElementById("h2"),
+          h3 = document.getElementById("h3")
+        section.classList.add("active");
+        overlay.addEventListener("click", () => section.classList.remove("active"));
+        closeBtn.addEventListener("click", () => section.classList.remove("active"));
+        h2.textContent = h2Data
+        h3.textContent = h3Data 
+        document.getElementById("loginRedirect").style.display = "none"
+      }
+
+      
+
+    </script>
+
+    <script src="script.js"></script> 
+
+  </section>
+</body>
+
+</html>

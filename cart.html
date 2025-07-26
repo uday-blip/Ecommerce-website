@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./logo.png.png" type="image/x-icon"> 
+    <style>
+        body{
+            display: flex;
+            flex-direction: column;
+        }
+        #cartDiv{
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+        #cart-card{
+             display: flex;
+             height: fit-content;
+             align-items: center;
+             padding: 10px;
+             gap: 50px;
+             border-radius: 10px;
+            box-shadow: rgba(0, 0, 0, 0.90) 0px 5px 15px;
+        }
+        #cart-card button:hover,#place-order:hover{
+            background-color: #00bcd4;
+        }
+        #remove-buttons{
+            display: flex;
+            flex-direction: column;
+        }
+        #buy-buttons{
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            width: fit-content;
+        }
+        #cartImage{
+            width: 300px;
+        }
+        #data-cart{
+            width: 30vw;
+            justify-content: center;
+            padding: 0px 20px;
+        }
+        #data-cart #description{
+            margin-top: 30px;
+        }
+        #data-cart #brand{
+            text-align: center;
+        }
+        #quantity-buttons{
+            display: flex;
+            gap: 10px;
+            /* width:150px; */
+            justify-content: center;
+            align-items: center;
+        }
+        #quantity-buttons button,#place-order{
+            font-size: large;
+            background-color: #257180;
+            padding: 10px;
+            border-radius: 10px;
+            color: white;
+            display: block;
+            margin: 0px auto;
+        }
+        #price{
+            width: 150px;
+        }
+        #backtoHome{
+            width: fit-content;
+            margin: 30px auto;
+        }
+        #priceDetails{
+            display: flex;
+            flex-direction: column;
+            row-gap: 50px;
+            margin: 40px auto;
+        }
+        .details{
+            display: flex;
+            justify-content: space-between;
+            list-style-type: none;
+            font-weight:600;
+            font-size: larger;
+            margin: 10px 0px;
+        }
+        #amount{
+            box-shadow: rgba(0, 0, 0, 0.90) 0px 5px 15px;
+            width: 40vw;
+            margin: 40px auto;
+            padding: 20px;
+            border-radius: 10%;
+            
+        }
+        #amount h1{
+            text-align: center;
+            margin-top: 50px;
+            color:#257180;
+        }
+
+        @media screen and (max-width: 991px) {
+
+            body{
+                display: flex;
+               
+            }
+            #cartImage{
+                order: 0;
+                width:210px;
+                height: 250px;
+                object-fit: contain;
+            }
+            #buy-buttons{
+                display: flex;
+                flex-direction: row;
+                order: 3;
+                gap: 10px;
+            }
+            #buy-buttons button{
+                width: 80px;
+            }
+            #cart-card{
+                display: flex;
+                flex-direction: column;
+                width: 230px;
+                gap: 15px;
+                padding: 10px;
+                text-align: center;
+            }
+            #quantity-buttons{
+                order: 2;
+            }
+            .details{
+                display: flex;
+                font-size: 1rem;
+            }
+            #amount{
+                width: 80vw;   
+            }
+            #cartDiv{
+                display: flex;
+                flex-direction: row;
+            }
+
+        }
+        
+
+    </style>
+</head>
+
+<body>
+    <button id="backtoHome">Home</button>
+    <div id="cartDiv"></div>
+    <div id="amount">
+        <h1>Price Details</h1>
+        <div id="priceDetails">
+            <ul class="">
+                <div class="details"><li>Price (All Items)</li> <li id="productsPrice"></li></div>
+                <div class="details"><li>Discount (10%)</li><li id="coupons"></li></div>
+                <div class="details"><li>Delivery Charges</li><li id="delivery"></li></div>
+                <div class="details"><li>Secured Packaging Fee</li><li id="packaging"></li></div> <hr><br>
+                <div class="details"><li>Total Amount</li><li id="totalAmount"></li></div>
+            </ul>
+        </div>
+        <button id="place-order">Place Order</button>
+    </div>
+
+    <script>
+
+        const cartContainer = document.getElementById("cartDiv");
+        const cartData = JSON.parse(localStorage.getItem("cart")) || [];
+        let productsPrice=document.getElementById("productsPrice")
+        let coupons=document.getElementById("coupons") 
+        let delivery=document.getElementById("delivery")
+        let packaging=document.getElementById("packaging")
+        let totalAmount=document.getElementById("totalAmount")
+        let amountDiv=document.querySelector("#amount")
+        document.addEventListener("DOMContentLoaded", () => {
+            // console.log(cartData);
+
+            if (cartData.length === 0) {
+                cartContainer.innerHTML = "<h3>Your cart is empty.</h3>";
+                return;
+            }
+
+            cartData.forEach((x, index) => {
+                let cartCard = document.createElement("div")
+                cartCard.id="cart-card"
+                cartCard.innerHTML +=
+                `   <div id="buy-buttons"><button id="buyNow">Buy</button>
+                    <button id="remove">Remove</button></div>
+                    <img id="cartImage" src="${x.Image}">
+                    <div id="data-cart"><p id="brand">${x.Brand}</p>
+                    <p id="description">${x.Description}</p></div>
+                    <div id="quantity-buttons"><button id="decre">-</button><p><b id="count">1</p><b><button id="incre">+</button></div>
+                    <p id="price"><b>${x.Price}<b></p>`
+                    cartContainer.append(cartCard)
+
+                    //count process
+                    let increment=document.getElementById("incre")
+                    let decrement=document.getElementById("decre")
+                    let count=document.getElementById("count")
+                    let productCount=1
+                    increment.addEventListener("click",()=>{
+                        productCount+=1
+                        count.textContent=`${productCount}`
+                        // console.log(productCount)
+                    })
+
+                    decrement.addEventListener("click",()=>{
+                        if(productCount>1){
+                            productCount-=1
+                            count.textContent=`${productCount}`
+                        }
+                    })
+
+                //remove cart process
+                cartCard.querySelector("#remove").addEventListener("click", () => {
+                        cartCard.remove();
+                        cartData.splice(index, 1)
+                        if (cartData.length === 0) {
+                            cartContainer.innerHTML = "<h3>Your Cart is Empty</h3>"
+                            amountDiv.style.display="none"
+                            
+                        }
+                    localStorage.setItem("cart", JSON.stringify(cartData))
+                })
+
+                
+
+                // buyNow process
+                cartCard.querySelector("#buyNow").addEventListener("click", (event) => {
+                    event.preventDefault();
+                        window.location.href = "payments.html"
+                        card.remove()
+                        cartData.splice(index,1)
+                        if (cartData.length === 0) {
+                            cartContainer.innerHTML = "<h3>Your Cart is Empty</h3>"
+                            amountDiv.style.display="none"
+                            
+                        }
+                    localStorage.setItem("cart", JSON.stringify(cartData))
+                    if(localStorage.getItem("cart").length==0){
+                        amountDiv.style.display="none"
+                    }
+
+                })
+
+                  let placeOrder=document.getElementById("place-order")
+                  placeOrder.addEventListener("click", () => {
+                    // event.preventDefault();
+                    // if (confirm("Are you sure to want to Buy the all Items")) {
+                        window.location.href = "payments.html"
+
+                        if (cartData.length === 0) {
+                            cartContainer.innerHTML = "<h3>Your Cart is Empty</h3>"
+                            amountDiv.style.display="none"  
+                            
+                        }
+                    // }
+                    localStorage.setItem("cart", JSON.stringify(cartData))
+
+                })
+
+            })
+            
+            //total price
+            let price=0
+            cartData.forEach(x=>{
+                let singlePrice=x.Price.slice(1).replace(",","")
+                price+=Number(singlePrice)
+            });
+            productsPrice.textContent=`+ ₹ ${price.toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}`
+            discount=Number(price*0.1)
+            coupons.textContent=`- ₹ ${discount.toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}`
+            coupons.style.color="green"
+            deliveryCharges=52.00
+            delivery.textContent="+ ₹ 52.00"
+            packagingcharges=59.00
+            packaging.textContent="+ ₹ 59.00"
+            totalPrice=(price-discount+packagingcharges+deliveryCharges).toFixed(2)
+            totalAmount.textContent=`₹ ${totalPrice.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}`
+            
+             
+        })
+
+        //back to home
+        let backtoHome = document.getElementById("backtoHome");
+        backtoHome.addEventListener("click", () => {
+            window.location.href = "index.html"
+        })
+
+
+    </script>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
